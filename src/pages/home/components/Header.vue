@@ -21,38 +21,34 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~styles/varibles';
     .header{
         display: flex;
         color: #fff;
-        background-color: #00bcd4;
+        background-color: $bgColor;
         text-align: center;
         line-height:0.86rem;
+        .header-left{
+            width: 0.64rem;
+            float: left;
+        }
+        .header-right{
+            width: 1.24rem;
+            float: right;
+            text-align: center;
+            .city{
+                font-size: 0.2rem;
+            }
+        }
+        .header-input{
+            flex:1;
+            background-color: #ffffff;
+            border-radius: .1rem;
+            margin-top:0.12rem;
+            margin-left: 0.2rem;
+            line-height: 0.64rem;
+            height: 0.64rem;
+            color: #ccc;
+        }
     }
-    .city{
-            font-size: 0.2rem;
-    }
-    .header-left{
-        width: 0.64rem;
-        float: left;
-    }
-    .header-right{
-        width: 1.24rem;
-        float: right;
-        text-align: center;
-    }
-    .header-input{
-        flex:1;
-        background-color: #ffffff;
-        border-radius: .1rem;
-        margin-top:0.12rem;
-        margin-left: 0.2rem;
-        line-height: 0.64rem;
-        height: 0.64rem;
-        color: #ccc;
-    }
-</style>
-
-
-</style>
-
 </style>

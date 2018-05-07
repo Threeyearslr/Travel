@@ -46,6 +46,7 @@ module.exports = {
     }],
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    "linebreak-style": [0 ,"error", "windows"]
+    "linebreak-style": [0 ,"error", "windows"],
+    "vue/no-parsing-error": [2, { "x-invalid-end-tag": false }]
   }
 }
