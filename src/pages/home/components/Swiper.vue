@@ -4,12 +4,9 @@
     <swiper-slide>
       <img src="../../../../static/images/002 (1).jpg" alt="" class="swiper-img" />
     </swiper-slide>
-    <!-- 
-
-      <swiper-slide v-for="item of swiperList" :key="item.id">
+    <!--<swiper-slide v-for="item of swiperList" :key="item.id">
       <img :src="item.imgUrl" alt="" class="swiper-img" />
-    </swiper-slide>
-     -->
+    </swiper-slide>-->
     <swiper-slide>
       <img src="../../../../static/images/003 (3).jpg" alt="" class="swiper-img" />
     </swiper-slide>
