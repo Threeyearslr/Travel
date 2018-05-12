@@ -1,14 +1,14 @@
 <template>
   <div class="wrapper">
-    <swiper :options="swiperOption">
-    <swiper-slide>
+    <swiper :options="swiperOption" v-if="showSwiper">
+    <!-- <swiper-slide>
       <img src="http://img1.qunarzz.com/piao/fusion/1609/47/0cfdc871ac183702.jpg_750x200_f6896acd.jpg" alt="" class="swiper-img" />
-    </swiper-slide>
+    </swiper-slide> -->
     <!--<swiper-slide v-for="item of swiperList" :key="item.id">
       <img :src="item.imgUrl" alt="" class="swiper-img" />
     </swiper-slide>-->
-    <swiper-slide>
-      <img src="http://img1.qunarzz.com/piao/fusion/1804/15/9250dbc86a456302.jpg_750x200_b423f532.jpg" alt="" class="swiper-img" />
+    <swiper-slide v-for="item of list" :key="item.id">
+      <img :src="item.imgUrl" alt="" class="swiper-img" />
     </swiper-slide>
     <div class="swiper-pagination"  slot="pagination"></div>
   </swiper>
@@ -19,21 +19,22 @@
 /* eslint-disable */
 export default {
   name: 'HomeSwiper',
+  props: {
+    list: Array,
+  },
   data: function(){
       return {
           swiperOption: {
             pagination: '.swiper-pagination',
             loop: true,
           },
-          swiperList: [{
-            id: '0001',
-            imgUrl:'',
-          }, {
-            id: '0002',
-            imgUrl:'',
-          }],
       };
   },
+  computed: {
+    showSwiper() {
+      return this.list.length;
+    }  
+  }
 };
 </script>
 

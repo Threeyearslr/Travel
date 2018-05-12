@@ -1,15 +1,15 @@
 <template>
  <div>
-     <home-header></home-header>
-     <home-swiper></home-swiper>
-     <home-icons></home-icons>
-     <home-recommend></home-recommend>
-     <home-weekend></home-weekend>
+     <home-header :city="city"></home-header>
+     <home-swiper :list="swiperList"></home-swiper>
+     <home-icons :list="iconList"></home-icons>
+     <home-recommend :list="recommendList"></home-recommend>
+     <home-weekend :list="weekendList"></home-weekend>
  </div>
 </template>
 
 <script>
-
+import axios from 'axios';
 import HomeHeader from './components/Header';
 import HomeSwiper from './components/Swiper';
 import HomeIcons from './components/Icons';
@@ -24,6 +24,35 @@ export default {
     HomeIcons,
     HomeRecommend,
     HomeWeekend,
+  },
+  data() {
+    return {
+      city: '',
+      swiperList: [],
+      iconList: [],
+      recommendList: [],
+      weekendList: [],
+    };
+  },
+  mounted() {
+    this.getHomeInfo();
+  },
+  methods: {
+    getHomeInfo() {
+      axios.get('/api/index.json').then(this.getHomeInfoSucc);
+    },
+    getHomeInfoSucc(result) {
+      // res.data才是服务器返回到的所有内容
+      const res = result.data;
+      if (res.ret && res.data) {
+        this.city = res.city;
+        // console.log(res.data.iconList);
+        this.swiperList = res.data.swiperList;
+        this.iconList = res.data.iconList;
+        this.recommendList = res.data.recommendList;
+        this.weekendList = res.data.weekendList;
+      }
+    },
   },
 };
 </script>
