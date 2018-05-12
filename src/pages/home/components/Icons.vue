@@ -21,39 +21,39 @@ export default {
     return {
         iconList: [{
             id: '0001',
-            imgUrl: '../../../../static/images/icons (1).jpg',
+            imgUrl: 'http://img1.qunarzz.com/piao/fusion/1803/95/f3dd6c383aeb3b02.png',
             desc: '热门景点',
         },{
             id: '0002',
-            imgUrl: '../../../../static/images/icons (2).jpg',
+            imgUrl: 'http://img1.qunarzz.com/piao/fusion/1803/bd/9f7b9b2b60c1502.png',
             desc: '滑雪季滑雪季滑雪季滑雪季',
         },{
             id: '0003',
-            imgUrl: '../../../../static/images/icons (3).jpg',
+            imgUrl: 'http://img1.qunarzz.com/piao/fusion/1804/ed/cf572be30fc32f02.png',
             desc: '泡温泉',
         },{
             id: '0004',
-            imgUrl: '../../../../static/images/icons (4).jpg',
+            imgUrl: 'http://img1.qunarzz.com/piao/fusion/1804/5a/13ceb38dcf262f02.png',
             desc: '出去玩',
         },{
             id: '0005',
-            imgUrl: '../../../../static/images/icons (5).jpg',
+            imgUrl: 'http://img1.qunarzz.com/piao/fusion/1803/76/eb88861d78fb9902.png',
             desc: '影视娱乐',
         },{
             id: '0006',
-            imgUrl: '../../../../static/images/icons (6).jpg',
+            imgUrl: 'http://img1.qunarzz.com/piao/fusion/1803/20/831d62d2e1c7be02.png',
             desc: 'KTV',
         },{
             id: '0007',
-            imgUrl: '../../../../static/images/icons (7).jpg',
+            imgUrl: 'http://img1.qunarzz.com/piao/fusion/1804/ff/fdf170ee89594b02.png',
             desc: '吃饭',
         },{
             id: '0008',
-            imgUrl: '../../../../static/images/icons (8).jpg',
+            imgUrl: 'http://img1.qunarzz.com/piao/fusion/1803/20/831d62d2e1c7be02.png',
             desc: '睡觉',
         },{
             id: '0009',
-            imgUrl: '../../../../static/images/icons (9).jpg',
+            imgUrl: 'http://img1.qunarzz.com/piao/fusion/1803/54/35899492b1302802.png',
             desc: '刘昊然',
         }],
     };
@@ -81,6 +81,7 @@ export default {
       overflow: hidden;
       height:0;
       padding-bottom: 50%;
+      margin-top: 0.1rem;
       .swiper-container{
           height:0;
           padding-bottom: 50%;
