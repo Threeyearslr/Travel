@@ -1,0 +1,317 @@
+require('./index.css');
+var page = {
+			// 获取包裹所有item的父容器
+	getMeiTuWrap : document.querySelector("#mei-tu-wrap"), 
+			// 获取添加相册按钮 
+	getBtnAdd : document.querySelector('#add'),
+			// 获取编辑相册按钮
+	// getAlterBtn:document.querySelectorAll('.alter')[0],
+	toIndex:document.querySelector('#toIndex'),
+	toAlbum:null,
+	albums:document.getElementsByClassName('mei-tu-item'),
+	getAlbumDetailsWrap:document.querySelector('#album-details-wrap'),
+	getAlbumItemWrap:document.querySelectorAll('.album-item-wrap')[0],
+	getUploadPicBtn:document.querySelector("#upload-pic"),
+	getUploadPicComBtn:null,
+	getAlterBtn:null,
+	// 预览图片的盒子
+	getPicsAreaWrap:document.getElementsByClassName('pics-area-wrap')[0],
+	getIfShowDiv:document.getElementsByClassName('if-show'),
+	// getIfShowDivMark:document.getElementsByClassName('mark'),
+	getOperateWrap:document.getElementsByClassName('operate')[0],   //折叠起来的导航
+	//获取包裹button的盒子
+	getBtnWrap:document.getElementsByClassName("btnWrap")[0],
+	hideOperateWrap:document.getElementsByClassName("hide-operate-wrap")[0],
+	// 小尺寸 按钮，控制导航
+	cHeader:document.getElementsByClassName("cd-header")[0],
+	navContainer:document.getElementsByClassName("nav-container")[0],
+	closeNav:document.getElementsByClassName("close-nav")[0],
+	getImgDiv:null,
+	getHideUploadPicComBtn:null,
+	getHideAlterBtn:null,
+	hideToIndex:document.querySelector('#toIndex'),
+	hideToAlbum:null,
+	filters : {
+			"jpeg": "/9j/4",
+			"gif": "R0IGOD",
+			"png": "iVBORw"
+	},
+	albumNum:1,
+	cWidth:document.body.clientWidth,
+	albumWidth:0,  //计算相册宽度
+	averageWidth:0,
+	// albumDis:20, // 相册之间的距离
+	// albumNum:this.albums.length,
+	init: function (){
+		
+		var _this = this;
+		HTMLCollection.prototype.toArray=function(){
+			return [].slice.call(this);
+		};
+		// 给初始已有每个相册wrap添加点击事件，页面打开后自己添加的相册并没有被赋给事件，需要手动添加。
+		this.albums[0].addEventListener('click',function(){
+				_this.openAlbum(_this.albums[0]);
+		});
+		// 响应式页面
+		this.getAlbumDetailsWrap.style.display="none";
+		this.albumWidth = this.getMeiTuWrap.offsetWidth/3;  //每一行放三个相册
+		this.albums.toArray().forEach(function(curr,index){
+			curr.style.width = _this.albumWidth + 'px';
+			curr.style.height = _this.albumWidth +30+ 'px';
+		});
+		this.bindEvent();
+		if(this.cWidth>=364){
+			this.hideOperateWrap.style.display="none";
+		}else{
+			// this.hideOperateWrap.style.display="block";
+		}
+	},
+	bindEvent: function (){
+		var _this = this;
+		// console.log(this.toAlbum);
+		// 返回首页
+		this.toIndex.addEventListener('click',this.returnIndex);
+		// 新建相册
+		this.getBtnAdd.addEventListener('click',this.addAlbum.bind(this));
+		// 点击上传照片按钮，
+		this.getUploadPicBtn.addEventListener('change',this.openFile.bind(this));
+	},
+	alterAlbum:function(){
+		// console.log(this);
+		var _this=this;
+		var desc = document.getElementsByClassName("details-name")[0];
+		// console.log(desc);
+		desc.contentEditable=true;
+		desc.style.border="1px solid wheat";
+		desc.addEventListener('blur',function(){
+			if(!desc.innerHTML){
+				alert("请输入内容~");
+			}else{
+				desc.style.border=null;
+				desc.contentEditable=false;
+				desc.innerHTML=document.getElementsByClassName("details-name")[0].innerHTML;
+			}
+		});
+		//遍历所有图片，可以删除,不想删除时取消
+		var divs=document.getElementsByClassName("if-show");
+		divs.toArray().forEach(function(curr,index){
+			curr.style.display="block";
+			var mark=curr.getElementsByClassName("mark");
+			mark[0].addEventListener('click',function(){
+				cancelPics(curr,index);
+			});
+			mark[1].addEventListener('click',function(){
+				quxiaoCancel(curr,index);
+			});
+		});
+		function cancelPics(obj,index){
+			//obj表示点击的哪个遮罩层，index是索引。
+			// alert("del: "+index);
+			// 点击删除，则删除整个imgdiv
+			var imgDivs=document.getElementsByClassName("imgDiv");
+			_this.getPicsAreaWrap.removeChild(imgDivs[index]);
+		}
+		function quxiaoCancel(obj,index){
+			//obj表示点击的哪个遮罩层，index是索引。
+			// alert("quxiao: "+index);
+			//点击取消，遮罩层消失
+			obj.style.display="none";
+		}
+	},
+	openFile:function(){
+		//选择图片并预览。
+		var tip = "请上传jpg、png、gif格式的图片";//提示消息
+		// this.getPicsAreaWrap.innerHTML = "";
+		var _this = this;
+		if(window.FileReader){
+			// console.log(_this.getUploadPicBtn.files);
+			for(var i=0,f;f=_this.getUploadPicBtn.files[i];i++){
+				var fr = new FileReader();
+				fr.onload = function(e){
+					// alert(_this);  // this 指向FileReader
+					var src=e.target.result;
+					if(!_this.validateImg(src)){
+						alert(tip);
+					}
+					else{
+						_this.showPrvImg(src);
+					}
+				}
+				fr.readAsDataURL(f);
+			}
+		}
+		else{
+				if(!/\.jpg$|\.png$|\.gif$|/i.test(_this.getUploadPicBtn.value)){
+					alert(tip);
+				}
+				else{
+					_this.showPrvImg(_this.getUploadPicBtn.value);
+				}
+		}
+	},
+	validateImg:function(data){
+		var pos=data.indexOf(",")+1;
+		for(var e in this.filters){
+			if(data.indexOf(this.filters[e]) === pos){
+				return e;
+			}
+		}
+		return null;
+	},
+	showPrvImg:function(src){
+			// alert(src);
+			// 选择性填入图片说明
+			var img = document.createElement("img");
+			var imgDiv = document.createElement('div');
+			var imgDesc = document.createElement('input');
+			imgDiv.style.display = "inline-block";
+			imgDiv.className="imgDiv";
+			imgDiv.style.height = 230+'px';
+			imgDiv.style.position="relative";
+			img.src = src;
+			img.width=165;
+			img.height = 200;
+			imgDesc.style.width=165+'px';
+			imgDesc.style.height=25+'px';
+			imgDesc.style.display='block';
+			imgDesc.style.backgroundColor='rgba(220,220,220,.8)';
+			imgDesc.setAttribute("placeholder","您可以输入图片描述");
+			this.getPicsAreaWrap.appendChild(imgDiv);
+			imgDiv.appendChild(imgDesc);
+			imgDiv.appendChild(img);
+			//开始添加遮罩层，如果用户点击编辑，则出现删除，取消
+			var wrap=document.createElement("div");
+			wrap.className="if-show";
+			wrap.style.width=imgDiv.offsetWidth+'px';
+			wrap.style.height=225+'px';
+			wrap.style.backgroundColor="rgba(220,220,220,.8)";
+			wrap.style.marginTop=-225+'px';
+			var mark1=document.createElement("div");
+			mark1.className="mark";
+			mark1.style.width=imgDiv.offsetWidth/2+'px';
+			mark1.style.marginTop=(imgDiv.offsetHeight-100)/2+"px";
+			mark1.style.lineHeight=100+"px";
+			mark1.innerHTML="删除";
+			
+			var mark2=document.createElement("div");
+			mark2.className="mark";
+			mark2.innerHTML="取消";
+			mark2.style.width=imgDiv.offsetWidth/2+'px';
+			mark2.style.marginTop=(imgDiv.offsetHeight-100)/2+"px";
+			mark2.style.lineHeight=100+"px";
+			
+			wrap.appendChild(mark1);
+			wrap.appendChild(mark2);
+			imgDiv.appendChild(wrap);
+			
+	},
+	uploadCom:function(){
+		alert("选择完毕");
+		//描述以及图片都提交
+	},
+	openAlbum:function(currObj){
+		//将那几个button添加到导航，并绑定事件，如果离开此页面则隐藏
+		var toAlbum='<a  href="#" id="toAlbum">'+
+						'<span>返回相册</span>'+
+					'</a>';
+		var complish='<a  href="#" id="upload-pic-complish">'+
+						'<span>完成</span>'+
+					'</a>';
+		var alter='<a  href="#" id="alter">'+
+						'<span>编辑</span>'+
+					'</a>';
+		// 点击某个相册查看相册内容，将隐藏的相册详情wrap显示，同时隐藏所有的mei-tu-item
+		this.getAlbumItemWrap.style.display = 'none';
+		this.getAlbumDetailsWrap.style.display = 'block';
+		// 显示wrap后，开始根据传进去的数据，渲染wrap里的内容
+		this.showAlbumDetail(currObj);
+		//绑定事件
+		if(this.cWidth>=364){
+			this.hideOperateWrap.style.display="none";
+			this.getBtnWrap.innerHTML='<a href="#" id="toIndex">'+
+										'<span>返回首页</span>'+
+										'</a>'+
+										toAlbum+
+										complish+
+										alter;
+			this.toIndex=document.querySelector('#toIndex'),
+			this.toAlbum=document.querySelector('#toAlbum'),
+			this.getUploadPicComBtn=document.querySelector("#upload-pic-complish");
+			this.getAlterBtn=document.querySelector("#alter");
+			this.toIndex.addEventListener('click',this.returnIndex);
+			this.toAlbum.addEventListener('click',function(){
+				window.location.href='./content-item-meitu.html';
+			});
+				// 选择完毕,点击完成按钮，开始上传。
+			this.getUploadPicComBtn.addEventListener('click',this.uploadCom);	
+						//编辑按钮事件
+			var _this=this;
+			// console.log(this);
+			this.getAlterBtn.addEventListener('click',function(){
+				_this.alterAlbum().bind(_this);
+			});
+		}else{
+			this.getOperateWrap.style.display="none";
+			this.hideOperateWrap.style.display="block";
+			this.hideToIndex=document.querySelector('#hide-toIndex'),
+			this.hideToAlbum=document.querySelector('#hide-toAlbum'),
+			this.getHideUploadPicComBtn=document.querySelector("#hide-upload-pic-complish");
+			this.getHideAlterBtn=document.querySelector("#hide-alter");
+			this.hideToIndex.addEventListener('click',this.returnIndex);
+			this.hideToAlbum.addEventListener('click',function(){
+				window.location.href='./content-item-meitu.html';
+			});
+			console.log(this.getHideAlterBtn);
+			// 选择完毕,点击完成按钮，开始上传。
+			this.getHideUploadPicComBtn.addEventListener('click',this.uploadCom);	
+			//编辑按钮事件
+			var _this=this;
+			// console.log(this);
+			this.getHideAlterBtn.addEventListener('click',function(){
+				_this.alterAlbum().bind(_this);
+			});
+			this.cHeader.addEventListener("click",function(){
+				_this.navContainer.style.display="block";
+				_this.cHeader.style.display="none";
+				_this.closeNav.style.display="block";
+				_this.hideOperateWrap.style.height=280+"px";
+			});
+			this.closeNav.addEventListener("click",function(){
+				_this.navContainer.style.display="none";
+				_this.cHeader.style.display="block";
+				_this.closeNav.style.display="none";
+				_this.hideOperateWrap.style.height=55+"px";
+			});
+		}
+	},
+	showAlbumDetail:function(curr){
+		var desc = curr.getElementsByClassName("mei-tu-desc")[0].innerHTML;
+		document.querySelectorAll('.details-name')[0].innerHTML = desc;
+	},
+	
+	
+	addAlbum:function(){
+		// alert(this);
+		// console.log(this.albums.length);
+		var _this = this;
+		this.albumNum+=1;
+		// 先将要添加的模版存起来，
+		var sourceNode = document.querySelectorAll('.mei-tu-item')[0];
+		var addModelHtml = sourceNode.cloneNode(true); //表示也克隆他的子节点
+		// 每次克隆完节点，都要调用这个函数，给他手动添加事件
+		addModelHtml.addEventListener('click',function(){
+				_this.openAlbum(addModelHtml);
+		});
+		// alert(addModelHtml.innerHTML);//获取成功
+		// 根据数据改变相册的标题和内容
+		var modelHtmlHead = addModelHtml.getElementsByClassName('mei-tu-desc')[0];
+		modelHtmlHead.innerHTML = '我的第'+ this.albumNum+'个相册';
+		this.getAlbumItemWrap.appendChild(addModelHtml);
+	},
+	returnIndex:function(){
+		window.location.href='./index.html';
+	},
+};
+(function(){
+	page.init();
+})();

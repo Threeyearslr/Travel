@@ -49,7 +49,6 @@ export default {
         this.timer=setTimeout(() => {
           const touchY = e.touches[0].clientY-74;  // 相对于篮框
           const index = Math.floor((touchY-this.startY)/20);
-          console.log(this.startY);
           if(index >= 0 && index < this.letters.length) {
            this.$emit('change',this.letters[index]);
           }
